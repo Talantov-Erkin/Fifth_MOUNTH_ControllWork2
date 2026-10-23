@@ -6,15 +6,19 @@
       "price": 50,
       "description": "Cool shirt",
       "category": "Clothes",
-      "images": ["https://placehold.co/600x400"]
+      "images": [
+        "https://placehold.co/600x400"
+      ]
     },
     {
       "id": "2",
-      "title": "Ivanov Phone",
+      "title": "Ivanov ",
       "price": 500,
       "description": "Smartphone",
       "category": "Electronics",
-      "images": ["https://placehold.co/600x400"]
+      "images": [
+        "https://placehold.co/600x400"
+      ]
     },
     {
       "id": "3",
@@ -22,11 +26,70 @@
       "price": 20,
       "description": "Cool hat",
       "category": "Clothes",
-      "images": ["https://placehold.co/600x400"]
+      "images": [
+        "https://placehold.co/600x400"
+      ]
+    },
+    {
+      "title": "Ivanov New Product",
+      "price": 100,
+      "description": "Created from app",
+      "category": "Clothes",
+      "images": [
+        "https://placehold.co/600x400"
+      ],
+      "id": "Jm3FRk5aHW0"
+    },
+    {
+      "title": "Ivanov New Product",
+      "price": 100,
+      "description": "Created from app",
+      "category": "Clothes",
+      "images": [
+        "https://placehold.co/600x400"
+      ],
+      "id": "p6_h1eL4et0"
+    },
+    {
+      "title": "Ivanov New Product",
+      "price": 100,
+      "description": "Created from app",
+      "category": "Clothes",
+      "images": [
+        "https://placehold.co/600x400"
+      ],
+      "id": "npaSp3hYnqs"
+    },
+    {
+      "title": "Ivanov ",
+      "price": 15000,
+      "category": "Electronics",
+      "description": "GoodPost Yeah",
+      "images": [
+        "https://placehold.co/600x400"
+      ],
+      "id": "Kvx5Nwwds54"
+    },
+    {
+      "title": "Ivanov Rinat Vse Budet horosho",
+      "price": 666666,
+      "category": "Electronics",
+      "description": "egasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdthegasrgsdrbsdxrtbxdfbxdrbxdnhdth",
+      "images": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw3Tz-L5V8h2A6LbBVzzCPxL9ypiwFOcbJCo1wTGtlLA&s=10"
+      ],
+      "id": "eP8mbsxkIOg"
     }
   ],
   "categories": [
-    { "id": "1", "name": "Clothes" },
-    { "id": "2", "name": "Electronics" }
-  ]
+    {
+      "id": "1",
+      "name": "Clothes"
+    },
+    {
+      "id": "2",
+      "name": "Electronics"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

@@ -18,3 +18,9 @@ export const useFavoritesStore = create(
     { name: 'favorites-storage' }
   )
 );
+
+export const useModalStore = create((set) => ({
+  isCreateOpen: false,
+  openCreate: () => set({ isCreateOpen: true }),
+  closeCreate: () => set({ isCreateOpen: false }),
+}));

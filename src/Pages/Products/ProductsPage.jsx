@@ -25,37 +25,42 @@ import {
   DeleteOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { useFavoritesStore } from '../../Store/store.js';
+import { useFavoritesStore, useModalStore } from "../../Store/store.js";
 import {
   useProducts,
   useCategories,
-  useCreateProduct,
   useDeleteProduct,
 } from "../../API/queries";
+import CreateProductModal from "../../components/CreateProductModal.jsx";
 import styles from "./Products.module.scss";
 
 const { Title, Text } = Typography;
 const LIMIT = 6;
+const PLACEHOLDER = "https://placehold.co/600x400";
 
 export default function ProductsPage() {
   const initialData = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const page = Number(searchParams.get("page")) || 1;
   const category = searchParams.get("category") || "";
   const sort = searchParams.get("sort") || "";
 
-  const { toggleFavorite, favorites } = useFavoritesStore();
-  const { data: products = initialData || [], isLoading } = useProducts({
+  const favorites = useFavoritesStore((state) => state.favorites);
+  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
+  const openCreate = useModalStore((state) => state.openCreate);
+
+  const { data, isLoading, isError, error } = useProducts({
     page,
     limit: LIMIT,
     category,
     sort,
   });
-  const { data: categories = [] } = useCategories();
+  const products = data ?? initialData ?? [];
 
-  const createMutation = useCreateProduct();
+  const { data: categories = [] } = useCategories();
   const deleteMutation = useDeleteProduct();
 
   const updateParam = (key, value) => {
@@ -66,35 +71,103 @@ export default function ProductsPage() {
     setSearchParams(newParams);
   };
 
-  const handleCreate = () => {
-    createMutation.mutate(
-      {
-        title: "Ivanov New Product",
-        price: 100,
-        description: "Created from app",
-        category: "Clothes",
-        images: ["https://placehold.co/600x400"],
-      },
-      { onSuccess: () => message.success("Товар создан!") },
-    );
+  const handleDelete = (id, title) => {
+    if (!title.includes("Ivanov")) {
+      messageApi.error("Удалять можно только свои товары!");
+      return;
+    }
+    deleteMutation.mutate(id, {
+      onSuccess: () => messageApi.success("Удалено"),
+    });
   };
 
-  const handleDelete = (id, title) => {
-    if (!title.includes("Ivanov"))
-      return message.error("Удалять можно только свои товары!");
-    deleteMutation.mutate(id, { onSuccess: () => message.success("Удалено") });
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className={styles.center}>
+          <Spin size="large" />
+        </div>
+      );
+    }
+
+    if (isError) {
+      return (
+        <Empty
+          description={`Не удалось загрузить товары: ${error?.message ?? ""}`}
+        />
+      );
+    }
+
+    if (products.length === 0) {
+      return <Empty description="Товаров нет" />;
+    }
+
+    return (
+      <Row gutter={[24, 24]}>
+        {products.map((product) => {
+          const isFav = favorites.some((f) => f.id === product.id);
+          return (
+            <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
+              <Card
+                hoverable
+                cover={
+                  <img
+                    alt={product.title}
+                    src={product.images?.[0] || PLACEHOLDER}
+                    className={styles.cardImage}
+                  />
+                }
+                actions={[
+                  <Button
+                    type="text"
+                    key="fav"
+                    onClick={() => toggleFavorite(product)}
+                  >
+                    {isFav ? (
+                      <HeartFilled style={{ color: "red" }} />
+                    ) : (
+                      <HeartOutlined />
+                    )}
+                  </Button>,
+                  <Button
+                    type="text"
+                    key="edit"
+                    icon={<EditOutlined />}
+                    onClick={() => navigate(`/product/${product.id}?edit=true`)}
+                  />,
+                  <Popconfirm
+                    key="del"
+                    title="Удалить товар?"
+                    okText="Да"
+                    cancelText="Нет"
+                    onConfirm={() => handleDelete(product.id, product.title)}
+                  >
+                    <Button type="text" danger icon={<DeleteOutlined />} />
+                  </Popconfirm>,
+                ]}
+              >
+                <Card.Meta
+                  title={
+                    <Link to={`/product/${product.id}`}>{product.title}</Link>
+                  }
+                  description={<Text strong>${product.price}</Text>}
+                />
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+    );
   };
 
   return (
     <div>
+      {contextHolder}
+      <CreateProductModal />
+
       <div className={styles.header}>
         <Title level={2}>Каталог</Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={handleCreate}
-          loading={createMutation.isPending}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
           Создать
         </Button>
       </div>
@@ -121,70 +194,7 @@ export default function ProductsPage() {
         />
       </Space>
 
-      {isLoading ? (
-        <div className={styles.center}>
-          <Spin size="large" />
-        </div>
-      ) : products.length === 0 ? (
-        <Empty description="Товаров нет" />
-      ) : (
-        <Row gutter={[24, 24]}>
-          {products.map((product) => {
-            const isFav = favorites.some((f) => f.id === product.id);
-            return (
-              <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
-                <Card
-                  hoverable
-                  cover={
-                    <img
-                      alt={product.title}
-                      src={
-                        product.images?.[0] || "https://placehold.co/600x400"
-                      }
-                      className={styles.cardImage}
-                    />
-                  }
-                  actions={[
-                    <Button
-                      type="text"
-                      key="fav"
-                      onClick={() => toggleFavorite(product)}
-                    >
-                      {isFav ? (
-                        <HeartFilled style={{ color: "red" }} />
-                      ) : (
-                        <HeartOutlined />
-                      )}
-                    </Button>,
-                    <Button
-                      type="text"
-                      key="edit"
-                      icon={<EditOutlined />}
-                      onClick={() =>
-                        navigate(`/product/${product.id}?edit=true`)
-                      }
-                    />,
-                    <Popconfirm
-                      key="del"
-                      title="Удалить?"
-                      onConfirm={() => handleDelete(product.id, product.title)}
-                    >
-                      <Button type="text" danger icon={<DeleteOutlined />} />
-                    </Popconfirm>,
-                  ]}
-                >
-                  <Card.Meta
-                    title={
-                      <Link to={`/product/${product.id}`}>{product.title}</Link>
-                    }
-                    description={<Text strong>${product.price}</Text>}
-                  />
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      )}
+      {renderContent()}
 
       <div className={styles.pagination}>
         <Pagination
