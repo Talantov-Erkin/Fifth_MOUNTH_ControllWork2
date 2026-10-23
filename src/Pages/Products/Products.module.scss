@@ -1,0 +1,25 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.filters {
+  margin-bottom: 24px;
+  display: flex;
+  gap: 12px;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 50px 0;
+}
+.cardImage {
+  height: 200px;
+  object-fit: cover;
+}
+.pagination {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}

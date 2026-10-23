@@ -1,0 +1,32 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "title": "Ivanov Blue Shirt",
+      "price": 50,
+      "description": "Cool shirt",
+      "category": "Clothes",
+      "images": ["https://placehold.co/600x400"]
+    },
+    {
+      "id": "2",
+      "title": "Ivanov Phone",
+      "price": 500,
+      "description": "Smartphone",
+      "category": "Electronics",
+      "images": ["https://placehold.co/600x400"]
+    },
+    {
+      "id": "3",
+      "title": "Ivanov Hat",
+      "price": 20,
+      "description": "Cool hat",
+      "category": "Clothes",
+      "images": ["https://placehold.co/600x400"]
+    }
+  ],
+  "categories": [
+    { "id": "1", "name": "Clothes" },
+    { "id": "2", "name": "Electronics" }
+  ]
+}
